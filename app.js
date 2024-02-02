@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Define headers and query for fetching data
-var token = process.env.STARTTOKEN;
+const token = process.env.STARTTOKEN;
 var headers = { "Authorization": "Bearer " + token };
 var query = `
   query TournamentsByVideogame($perPage: Int!, $videogameId: ID!) {
