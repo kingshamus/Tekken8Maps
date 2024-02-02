@@ -43,13 +43,55 @@ var variables = {
     "videogameId": 49783
 };
 
+// Add a loading spinner
+var spinnerContainer = document.createElement('div');
+spinnerContainer.id = 'spinner-container';
+document.getElementById('map-container').appendChild(spinnerContainer);
+
+var spinner = document.createElement('div');
+spinner.innerHTML = '<div class="spinner"></div>';
+spinnerContainer.appendChild(spinner);
+
+// Add some basic styling for the spinner
+var style = document.createElement('style');
+style.innerHTML = `
+  #spinner-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure a higher z-index to appear on top */
+}
+
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #3498db;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(style);
+
 async function fetchData() {
     try {
+        // Display loading spinner
+        spinner.style.display = 'block';
+
         const response = await fetch('https://api.start.gg/gql/alpha', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({ query, variables }),
         });
+
+        // Hide loading spinner after fetching data
+        spinner.style.display = 'none';
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -62,6 +104,8 @@ async function fetchData() {
 
         return filteredTournaments;
     } catch (error) {
+        // Hide loading spinner in case of error
+        spinner.style.display = 'none';
         console.error(`Error fetching data: ${error.message}`);
         throw error;
     }
